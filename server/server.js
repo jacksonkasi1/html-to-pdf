@@ -33,10 +33,9 @@ app.use(
   })
 );
 
-
 app.get("/", async (req, res) => {
   res.status(200).send("HTML to PDF converter");
-})
+});
 
 
 app.options("/send-email", cors());
