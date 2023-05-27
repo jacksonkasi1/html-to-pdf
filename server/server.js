@@ -12,7 +12,6 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 
-// const { PDFDocument } = require("pdf-lib");
 const pdf = require("html-pdf-node");
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
@@ -42,7 +41,6 @@ app.use(
 app.get("/", async (req, res) => {
   res.status(200).send("HTML to PDF converter");
 });
-
 
 app.options("/send-email", cors());
 
@@ -79,37 +77,44 @@ app.post("/convert-base64-to-pdf", async (req, res) => {
     }
 
     // Remove prefix from Base64 string
-    const base64Data = data.replace(/^data:application\/pdf;base64,/, '');
+    const base64Data = data.replace(/^data:application\/pdf;base64,/, "");
 
     // Decode Base64 to buffer
     const pdfBuffer = Buffer.from(base64Data, "base64");
 
     // Save PDF buffer to file
-    fs.writeFile("generated-pdf.pdf", pdfBuffer, (err) => {
-      if (err) {
-        console.error("Error saving PDF:", err);
-        res.status(500).send("Error saving PDF");
-        return;
-      }
+    // fs.writeFile("generated-pdf.pdf", pdfBuffer, (err) => {
+    //   if (err) {
+    //     console.error("Error saving PDF:", err);
+    //     res.status(500).send("Error saving PDF");
+    //     return;
+    //   }
 
-      console.log("PDF file saved successfully.");
+    //   console.log("PDF file saved successfully.");
 
-      // Set response headers for file download
-      res.set({
-        "Content-Type": "application/pdf",
-        "Content-Disposition": 'attachment; filename="generated-pdf.pdf"',
-        "Content-Length": pdfBuffer.length.toString(),
-      });
+    //   // Set response headers for file download
+    //   res.set({
+    //     "Content-Type": "application/pdf",
+    //     "Content-Disposition": 'attachment; filename="generated-pdf.pdf"',
+    //     "Content-Length": pdfBuffer.length.toString(),
+    //   });
 
-      // Send the PDF file to the client
-      res.send(pdfBuffer);
+    //   // Send the PDF file to the client
+    //   res.send(pdfBuffer);
+    // });
+
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": 'attachment; filename="generated-pdf.pdf"',
+      "Content-Length": pdfBuffer.length.toString(),
     });
+
+    res.send(pdfBytes);
   } catch (err) {
     console.error("Error converting to PDF:", err);
     res.status(500).send("Error converting to PDF");
   }
 });
-
 
 app.post("/send-email", async (req, res) => {
   const { data } = req.body;
@@ -119,14 +124,12 @@ app.post("/send-email", async (req, res) => {
   }
 
   // Remove prefix from Base64 string
-  const base64Data = data.replace(/^data:application\/pdf;base64,/, '');
+  const base64Data = data.replace(/^data:application\/pdf;base64,/, "");
 
   // Decode Base64 to buffer
   const pdfBuffer = Buffer.from(base64Data, "base64");
 
-
   try {
-
     const mailOptions = {
       from: SENDGRID_EMAIL,
       to: TO_EMAIL,

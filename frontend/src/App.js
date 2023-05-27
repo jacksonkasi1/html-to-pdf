@@ -214,7 +214,7 @@ const PDFGenerator = () => {
 
       <p className="attribution footer_text">Created by Jackson Kasi 😎</p>
 
-      <p className="attribution">Thanks to html-pdf-node & pdf-lib 💖</p>
+      <p className="attribution">Thanks to html-pdf-node 💖</p>
     </div>
   );
 };
