@@ -79,6 +79,8 @@ const PDFGenerator = () => {
       const pdfData = await res.blob();
       const formData = await blobToBase64(pdfData);
 
+      console.log(formData);
+
       const response = await axios.post(
         "/convert-base64-to-pdf",
         {
@@ -111,6 +113,36 @@ const PDFGenerator = () => {
     alert("Copied to clipboard 🙌");
   };
 
+  // sendMail api call body base64 code of pdf
+  const sendMail = async () => {
+    const res = await fetch(pdfUrl);
+    const pdfData = await res.blob();
+    const formData = await blobToBase64(pdfData);
+
+    try {
+      const response = await axios.post(
+        "/send-email",
+        {
+          data: formData,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      if (response.data.error) {
+        alert(response.data.error);
+      }
+      console.log("success fully send email");
+    } catch (error) {
+      console.log("Email Send error: ", {error});
+    }
+  };
+
   const renderButtons = () => {
     return (
       <>
@@ -131,6 +163,9 @@ const PDFGenerator = () => {
         </button>
         <button className="action-button" onClick={() => setShowPdf(true)}>
           Show Pdf View
+        </button>
+        <button className="action-button" onClick={sendMail}>
+          Send Email
         </button>
       </>
     );
@@ -173,7 +208,7 @@ const PDFGenerator = () => {
 
       <br />
 
-      {showPdf  && <PdfViewerComponent pdfUrl={pdfUrl} />}
+      {showPdf && <PdfViewerComponent pdfUrl={pdfUrl} />}
 
       <br />
 

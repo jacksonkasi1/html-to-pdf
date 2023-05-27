@@ -1,12 +1,18 @@
+/**
+ * @see https://www.nicesnippets.com/blog/how-to-convert-base64-to-pdf-in-nodejs
+ * @see https://www.freecodecamp.org/news/save-a-base64-string-as-pdf-on-client-side-in-javascript/
+ */
+
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const sgTransport = require("nodemailer-sendgrid-transport");
 
 const fs = require("fs");
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const { PDFDocument } = require("pdf-lib");
+// const { PDFDocument } = require("pdf-lib");
 const pdf = require("html-pdf-node");
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
@@ -72,31 +78,54 @@ app.post("/convert-base64-to-pdf", async (req, res) => {
       throw new Error("No PDF data provided");
     }
 
-    const pdfBuffer = Buffer.from(data, "base64");
-    console.log("Received PDF buffer:", pdfBuffer);
+    // Remove prefix from Base64 string
+    const base64Data = data.replace(/^data:application\/pdf;base64,/, '');
 
-    const pdfDoc = await PDFDocument.load(pdfBuffer);
-    const pdfBytes = await pdfDoc.save();
-    console.log("PDF bytes:", pdfBytes);
+    // Decode Base64 to buffer
+    const pdfBuffer = Buffer.from(base64Data, "base64");
 
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="generated-pdf.pdf"',
-      "Content-Length": pdfBytes.length.toString(),
+    // Save PDF buffer to file
+    fs.writeFile("generated-pdf.pdf", pdfBuffer, (err) => {
+      if (err) {
+        console.error("Error saving PDF:", err);
+        res.status(500).send("Error saving PDF");
+        return;
+      }
+
+      console.log("PDF file saved successfully.");
+
+      // Set response headers for file download
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": 'attachment; filename="generated-pdf.pdf"',
+        "Content-Length": pdfBuffer.length.toString(),
+      });
+
+      // Send the PDF file to the client
+      res.send(pdfBuffer);
     });
-
-    res.send(pdfBytes);
   } catch (err) {
     console.error("Error converting to PDF:", err);
     res.status(500).send("Error converting to PDF");
   }
 });
 
+
 app.post("/send-email", async (req, res) => {
   const { data } = req.body;
 
+  if (!data) {
+    throw new Error("No PDF data provided");
+  }
+
+  // Remove prefix from Base64 string
+  const base64Data = data.replace(/^data:application\/pdf;base64,/, '');
+
+  // Decode Base64 to buffer
+  const pdfBuffer = Buffer.from(base64Data, "base64");
+
+
   try {
-    const pdfBuffer = Buffer.from(data, "base64");
 
     const mailOptions = {
       from: SENDGRID_EMAIL,
