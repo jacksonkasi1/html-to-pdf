@@ -146,7 +146,7 @@ const PDFGenerator = () => {
   const directDownloadPdf = async () => {
     try {
       setLoading(true);
-  
+
       const response = await axios.post(
         "/generate-pdf",
         {
@@ -159,28 +159,28 @@ const PDFGenerator = () => {
           responseType: "arraybuffer", // Set the response type to arraybuffer
         }
       );
-  
+
       console.log(response.data);
-  
+
       if (response.data.error) {
         alert(response.data.error);
         return;
       }
-  
+
       // Create a Blob from the arraybuffer data
       const blob = new Blob([response.data], { type: "application/pdf" });
-  
+
       // Create a temporary URL for the Blob
       const url = window.URL.createObjectURL(blob);
-  
+
       // Create a temporary link element and set its attributes
       const link = document.createElement("a");
       link.href = url;
       link.download = "your-filename.pdf"; // Set the desired filename for the downloaded PDF
-  
+
       // Programmatically click the link to trigger the download
       link.click();
-  
+
       // Clean up the temporary URL and link
       window.URL.revokeObjectURL(url);
     } catch (error) {
@@ -189,8 +189,6 @@ const PDFGenerator = () => {
       setLoading(false);
     }
   };
-  
-
 
   const renderButtons = () => {
     return (
@@ -267,6 +265,15 @@ const PDFGenerator = () => {
       <p className="attribution footer_text">Created by Jackson Kasi 😎</p>
 
       <p className="attribution">Thanks to html-pdf-node 💖</p>
+
+      <p>
+        Note: include <b>-webkit-print-color-adjust: exact;</b> in style tag for
+        get exact color from html to pdf
+      </p>
+      <a href="https://github.com/mrafiqk/html-pdf-node/issues/102">issue: #102 </a>
+
+      <br />
+      <br />
     </div>
   );
 };
