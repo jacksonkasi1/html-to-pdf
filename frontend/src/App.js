@@ -270,7 +270,23 @@ const PDFGenerator = () => {
         Note: include <b>-webkit-print-color-adjust: exact;</b> in style tag for
         get exact color from html to pdf
       </p>
-      <a href="https://github.com/mrafiqk/html-pdf-node/issues/102">issue: #102 </a>
+
+      <pre>
+        <code>
+          {`
+    <style>
+        body {
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+    </style>
+      `}
+        </code>
+      </pre>
+
+      <a href="https://github.com/mrafiqk/html-pdf-node/issues/102">
+        issue: #102{" "}
+      </a>
 
       <br />
       <br />
