@@ -8,6 +8,11 @@ export const  html = () => {
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Confirm Your Feedback Sync Account and Get Started</title>
   <style>
+
+  body {
+    print-color-adjust: exact;
+  }
+
 @media only screen and (max-width: 620px) {
   table[class=body] h1 {
     font-size: 28px !important;
@@ -89,6 +94,7 @@ table[class=body] .article {
     border-color: #4F46E5 !important;
   }
 }
+
 </style></head>
   <body class style="background-color: #eaebed; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
     <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; min-width: 100%; background-color: #eaebed; width: 100%;" width="100%" bgcolor="#eaebed">
